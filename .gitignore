@@ -1,2 +1,6 @@
+//Latex
 *.log
 *.blg
+*.bbl
+*.synctex.gz
+*.aux
