@@ -1,0 +1,304 @@
+\documentclass{acm_proc_article-sp}
+
+\begin{document}
+
+\title{Determining Community Interest in\\Text-Only Posts on Reddit}
+\subtitle{Project Proposal}
+
+%
+% You need the command \numberofauthors to handle the 'placement
+% and alignment' of the authors beneath the title.
+%
+% For aesthetic reasons, we recommend 'three authors at a time'
+% i.e. three 'name/affiliation blocks' be placed beneath the title.
+%
+
+\numberofauthors{3}
+
+\author{
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+Charles Lewis\\
+       \affaddr{University of Michigan}\\
+       \affaddr{Ann Arbor, MI}\\
+       \email{noodle@umich.edu}
+% 2nd. author
+\alignauthor
+Nathan Price\\
+       \affaddr{University of Michigan}\\
+       \affaddr{Ann Arbor, MI}\\
+       \email{nrprice@umich.edu}
+% 3rd. author
+\alignauthor
+David Purser\\
+       \affaddr{University of Michigan}\\
+       \affaddr{Ann Arbor, MI}\\
+       \email{dpurser@umich.edu}
+}
+
+\date{11 March 2014}
+
+\maketitle
+\begin{abstract}
+This paper proposes a term project for the EECS 498 Information Retrieval
+course at the University of Michigan which seeks to analyze content on 
+Reddit\footnote{\texttt{http://www.reddit.com/}} to determine community
+interest in certain topics, keywords, and questions.
+
+The project involves collecting a set of data from a number of subreddits
+(individual forums on Reddit) including textual content of each post,
+number of votes that the post received, number of comments on the post, and
+other information.  This information will be used to estimate the community's
+interest in each post.  These estimates will be compiled and indexed by keyword,
+allowing a user to query the system to determine the expected interest in a
+new post and whether a new post is very similar to previous posts.
+\end{abstract}
+
+% A category with the (minimum) three required fields
+\category{H.3.1}{Information Storage and Retrieval}{Content Analysis and Indexing}
+\category{H.3.3}{Information Storage and Retrieval}{Information Search and Retrieval}
+%A category including the fourth, optional field follows...
+%\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+%\terms{Algorithms, }
+
+\keywords{Data analysis, Reddit, community interest} % NOT required for Proceedings
+
+\section{Introduction}
+Expanding on a slightly modified version of one of the suggested term projects,
+this project aims to be able to accurately predict or measure community response
+and interest in text-only posts (sometimes known as ``self-posts'') on the popular
+internet forum Reddit.  These text-only posts are often found in dedicated ``subreddits''
+such as \texttt{/r/AskReddit} or \texttt{/r/ELI5}.
+
+The popularity of current and previous posts on Reddit can be estimated through the use
+of comment counts, upvotes/downvotes\footnote{Users on Reddit can give either positive or
+negative votes to posts and comments, known respectively as `upvotes' and `downvotes'.
+Upvotes generally increase the visibility of a post or comment by causing it to be located
+near the top of the page, whereas downvotes have the opposite effect.} given to the post by users, number of distinct
+users who commented, average length of user responses, etc.
+
+This popularity measure
+can then be used to predict the expected popularity of a new question or topic by 
+matching keywords or topics of the new post with those of past posts to determine
+whether the new question is similar to any previously posted content, and, if so,
+how popular the new post is expected to be.
+
+\section{Previous Work}
+There are a number of websites dedicated to detecting ``reposts'' on Reddit, which are
+exact duplicates of previously posted content.  One such website is KarmaDecay\footnote{\texttt{http://karmadecay.com/}}.
+However, these websites only detect exact duplicates of hyperlinks and images, which make
+up the majority of posts in many subreddits.  The textual content of posts in text-only
+subreddits such as \texttt{/r/AskReddit} or \texttt{/r/ELI5} is not analyzed.
+This gives these websites limited usefulness in text-only subreddits, where no images or external
+links are generally allowed.
+
+Furthermore, existing systems are designed mostly to help users avoid reposting exact duplicates of
+existing material, and do not match based on a similarity measure.  This means that related or
+very similar posts will not be matched, only exactly identical ones.  By using a text-matching system based
+on similarity scores,
+our project will allow text-only topics to be analyzed not to detect exact duplicates (as these
+are rare in text posts due to the diversity inherently present in language), but to find similar
+posts from the past based on matching keywords, topics, phrases, and other
+content.  These similar posts can then be used to judge or estimate potential interest in the new
+post and to predict useful information such as whether a post will be popular or successful or
+which subreddits it may be most successful in by analyzing the interest in the previous posts. 
+In addition, the uniqness of the post will also contribute to determing how popular a post might be.
+
+Write about this article here \cite{liu:interest}
+
+\vspace{10 mm}
+
+\section{Approach}
+Our approach for this project involves three major areas: data collection, processing, and retrieval.
+
+First, data must be collected from Reddit.  This will involve collecting and indexing a number of past posts
+in text-only subreddits.  The posts and their comments will be analyzed, looking for common keywords,
+themes, or topics which seem relevant to the post in order to match the post with other submissions
+that have similar topics.
+
+Next, the popularity or interest of the post will then be measured through various statistics including
+number of comments, number of upvotes/downvotes received (through Reddit's voting system), number
+of distinct users who commented on the post, average length of the comments, average depth of
+comment trees\footnote{On Reddit, users can comment on other comments, forming a tree-like structure of comments.},
+number of upvotes/downvotes on comments and their distribution among the comments, time of day that the post was made,
+and how long the post has on Reddit.\footnote{Reddit's algorithm works in such a way that posts that have been on Reddit
+a long period of time have a lower ``score''. We may have to inflate the score given to older posts as their ranking
+has decayed over time.}
+
+It is currently unclear whether these metrics will be adequate or accurate measures of community interest
+in a post, but we assume that one or more of these measures in combination will be able to give insight
+into the popularity of posts and comments based on certain topics or keywords.  For example, we assume that
+posts with greater numbers of comments must have been more interesting or popular among users.  Likewise, we
+assume that posts with large numbers of upvotes were likely interesting.  However, posts with many downvotes
+present a less clear picture: the post may just be very controversial, but still interesting---or the post
+may be badly written or uninteresting.  We will have to analyze the metrics to determine which of these
+scenarios is more likely, given the other information we have collected about the post.
+
+The various metrics may have different weighting as to analyzing the interest in the topic. As previously mentioned,
+the numerical ``score'' seen on Reddit decays over time. Also, the upvote/downvote system is can be abused by bots and
+other humans not correctly using this system. Therefore, we believe that while the number of upvotes/downvotes will be 
+usefull, it will likely have a lower ranking than the number of comments and the comparison to other, similary posts.
+
+
+
+Finally, the keywords, and posts matching those keywords, will then be used to create a database which
+can be used to judge popularity of a post based on which keywords appear in the post title or text
+body.  This database can then be queried to determine expected popularity of a new post given its
+text.  This database will also be designed in such a way that new posts on Reddit will be incoporated into the corpus.
+It may also be able to suggest similar keywords (words which are frequently used with
+the ones in the given text), topics, or information to include in the post which may increase
+the post's popularity score (and thus hopefully lead to a more interesting post on Reddit).\footnote{This is a possible extension of the project and will need to be explored further}
+
+\section{Testing}
+We will have to analyze how our system works in comparision to actual interest. To accomplish this, we will
+provide the system with queries matching those of known range of documents. We will take a sample of topics found on Reddit
+and have our system generate a interst score\footnote{We define our Interest Score as being an approximation of the number of
+upvotes/downvotes, and comments that a query could expect to attain. We may also include an ideal time of day to post, in addition
+to a ranking on how it compares to all posts on a given subreddit (in the form of an Interest Percentage)} for them. 
+We will then compare our generated interest score to the interest score of those in the sample.
+
+We will make attempts to account for the time decay of upvotes/downvotes and the time of day the post was made. We will
+also make sure to take a wide sample of posts, ranging from the most popular to least popular, to make sure that our system
+is not fitting to a specific subset of posts and manages to accruately (hopefully with a low error) the Interest Score of 
+those sampled posts.
+
+
+\section{Implementation}
+We will implement the project in Python, using Python libraries and tools to download, analyze,
+store, index, and query content from Reddit.
+
+Reddit provides a web-based API\footnote{\texttt{http://www.reddit.com/dev/api}} for accessing its
+content directly, eliminating the need for complicated scraping mechanisms and reducing server
+load introduced by repetitive page generation during crawling.  This API appears to provide all
+of the necessary functions that we would require for this project, such as the ability to
+obtain posts, their upvote and downvote counts, comments, comment scores, information about
+users, and many other useful pieces of information.
+
+Reddit has some guidelines on their API usage\footnote{\texttt{http://github.com/reddit/reddit/wiki/API}},
+and expects users to rate-limit their gathering of information to approximately one request every two seconds
+(technically, thirty requests every minute).  Other restrictions on API usage, such as valid
+and correct User-Agent strings which include version numbers, must be obeyed as well.
+Care must be taken to properly use the API according to all of Reddit's rules.
+
+There are pre-existing libraries for Python which can interface with the Reddit API, such as
+the \textit{Python Reddit API Wrapper}\footnote{\textit{PRAW}, \texttt{https://praw.readthedocs.org/en/latest/}}.
+The PRAW API is easy to use and is well-documented, and also follows all of Reddit's API rules
+mentioned previously, making it easy to obtain data from Reddit without worrying about the raw
+data processing.  This will give us more time to spend analyzing and retrieving information
+from the databases we build.
+
+Furthermore, Reddit's underlying server-side source code is also written
+in Python and is available on Github\footnote{\texttt{https://github.com/reddit/reddit}}.  Analysis of this
+code may be useful for determining the best uses of the statistics provided by Reddit.  For instance,
+Reddit's own ranking algorithm which determines which posts should appear near the top of a given
+subreddit uses the post's age and upvote/downvote counts in order to determine the post's position,
+and analyzing this code may give us some useful insight into measures which we may want to use to
+judge interest in posts.  It also may give us a baseline comparison point for recent posts.
+
+Additionally, Reddit ``fuzzes'' the values it reports for upvotes/downvotes on currently popular posts, in
+order to avoid vote manipulation by users.  Analyzing the source code for Reddit should allow us to
+avoid retrieving incorrect data because of this issue.
+
+Bots and users on Reddit commonly downvote old posts for several different reasons, which can skew
+results.  It is unclear whether these downvotes create a significant impact on the total score of
+posts in the long term, but care must be taken to watch for and account for these factors so that
+our data is correct and accurate.
+
+As ``community interest'' is a relatively vague and subjective term, it is difficult to define a strong
+baseline comparison for measuring the accuracy of our algorithm.
+However, being able to accurately predict, based on text alone, whether a new post will reach the front
+page of a subreddit (top 25 of recent posts, according to Reddit's ranking algorithm) should be a good
+start.  Similarly, the algorithm should assign high interest ratings to all posts which appear on
+the front page, when supplied only with the text of the post.  Therefore, we could create snapshots
+of the front page and of recently submitted posts at regular intervals, and use these to measure
+the effectiveness of our algorithms by routinely calculating interest for all posts on the front page
+and for all recently submitted posts.  We expect the posts on the front page to have a higher interest
+rating than the random newly submitted posts.  Furthermore, by running different versions of the algorithm
+on the same set of front page posts, we can update and tweak variables in the algorithm until it ranks these
+posts more highly, indicating agreement with Reddit's own ranking algorithms.
+
+Our project implementation will likely use a database storage system to store
+gathered information permanently so that it can be re-analyzed, re-processed, and re-indexed as
+our algorithms are developed and refined, without having to download all of the information again.
+This will allow us to have a nearly continuously growing database from which to pull data from, so
+our algorithms should get more and more accurate over time as they gain access to more and more
+data.  However, we have not decided on a particular storage mechanism.
+
+Using a complex database storage mechanism as opposed to simple data structures will allow us to more
+easily do complex analysis of information.  For instance, summing the upvote/downvote totals for all
+comments on a given post can be done in a single, simple SQL statement, whereas it would take several
+loops to do this from Python.  On the other hand, a database storage engine adds complexity and can
+be more difficult to manage.  An alternative would be to use Python's \texttt{pickle} library, which
+stores native Python data structures (lists, tuples, and dictionaries) directly in byte-form into a file,
+allowing them to be saved and loaded at any time.  However, depending on the amount of data collected,
+it may be unreasonable to store all of the data in memory and it may be necessary to use additional file
+storage as well.
+
+% go to next column so it looks pretty and stuffs.
+\balancecolumns
+
+Some additional work will have to be done to create an interface for querying the database.  This
+interface could be implemented in a terminal-based system for basic querying, or in a
+browser-based setting (for example through Python's \texttt{SimpleHTTPServer} modules) to allow
+for better data visualization of the results.  The relevant information to be displayed has not
+yet been determined, so the implementation details of the user interface will be determined later.
+
+
+\section{Group Tasks and \\Responsibilities}
+
+This project has many pieces that need to fit together properly to produce a working product.
+As mentioned in prior sections, the main parts of the project are: gathering and storing data
+from Reddit; developing algorithms for determining the interest in posts; matching new posts
+with similar or related posts from the past; and creating some sort of interface for
+displaying the results to the user.
+
+These parts are all heavily dependent on one another, so it would be difficult to completely
+split the work of the project among group members from the very beginning.  Instead, we will
+begin by working together on each part of the project until the underlying infrastructure
+has been completed; this way, we are always on the same page as to what must be done next
+and how it relates to the other aspects of the project.
+
+Once the main portion of the project is working, we can begin working on improving parts
+separately as necessary to improve the algorithms, collection, and display of information
+to the user.
+
+Other parts of the project, such as writing the final paper and preparing the presentation,
+will be assigned later, but will also involve the group as a whole.
+
+
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\bibliographystyle{abbrv}
+\bibliography{proposal}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+%
+% ACM needs 'a single self-contained file'!
+%
+%APPENDICES are optional
+%\balancecolumns
+
+%\subsection{References}
+%Generated by bibtex from your ~.bib file.  Run latex,
+%then bibtex, then latex twice (to resolve references)
+%to create the ~.bbl file.  Insert that ~.bbl file into
+%the .tex source file and comment out
+%the command \texttt{{\char'134}thebibliography}.
+
+% That's all folks!
+\end{document}
