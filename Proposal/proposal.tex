@@ -132,7 +132,7 @@ number of comments, number of upvotes/downvotes received (through Reddit's votin
 of distinct users who commented on the post, average length of the comments, average depth of
 comment trees\footnote{On Reddit, users can comment on other comments, forming a tree-like structure of comments.},
 number of upvotes/downvotes on comments and their distribution among the comments, time of day that the post was made,
-and how long the post has on Reddit.\footnote{Reddit's algorithm works in such a way that posts that have been on Reddit
+and how long the post has been on Reddit.\footnote{Reddit's algorithm works in such a way that posts that have been on Reddit
 a long period of time have a lower ``score''. We may have to inflate the score given to older posts as their ranking
 has decayed over time.}
 
@@ -146,32 +146,34 @@ may be badly written or uninteresting.  We will have to analyze the metrics to d
 scenarios is more likely, given the other information we have collected about the post.
 
 The various metrics may have different weighting as to analyzing the interest in the topic. As previously mentioned,
-the numerical ``score'' seen on Reddit decays over time. Also, the upvote/downvote system is can be abused by bots and
-other humans not correctly using this system. Therefore, we believe that while the number of upvotes/downvotes will be 
-usefull, it will likely have a lower ranking than the number of comments and the comparison to other, similary posts.
+the numerical ``score'' seen on Reddit decays over time. Also, the upvote/downvote system can be abused by bots and
+other humans attempting to abuse the system. Therefore, we believe that while the number of upvotes/downvotes will be 
+useful, it will likely have a lower weight than the number of comments and the comparison to other, similar posts.
 
 
 
 Finally, the keywords, and posts matching those keywords, will then be used to create a database which
 can be used to judge popularity of a post based on which keywords appear in the post title or text
 body.  This database can then be queried to determine expected popularity of a new post given its
-text.  This database will also be designed in such a way that new posts on Reddit will be incoporated into the corpus.
-It may also be able to suggest similar keywords (words which are frequently used with
+text.  This database will also be designed in such a way that new posts on Reddit will be automatically
+incoporated into the corpus.
+The query system may also be able to suggest similar keywords (words which are frequently used with
 the ones in the given text), topics, or information to include in the post which may increase
-the post's popularity score (and thus hopefully lead to a more interesting post on Reddit).\footnote{This is a possible extension of the project and will need to be explored further}
+the post's popularity score (and thus hopefully lead to a more interesting post on Reddit).
+\footnote{This is a possible extension of the project and will need to be explored further.}
 
 \section{Testing}
-We will have to analyze how our system works in comparision to actual interest. To accomplish this, we will
+We will have to analyze how our system performs in comparison to actual level of interest. To accomplish this, we will
 provide the system with queries matching those of known range of documents. We will take a sample of topics found on Reddit
-and have our system generate a interst score\footnote{We define our Interest Score as being an approximation of the number of
-upvotes/downvotes, and comments that a query could expect to attain. We may also include an ideal time of day to post, in addition
-to a ranking on how it compares to all posts on a given subreddit (in the form of an Interest Percentage)} for them. 
+and have our system generate a interest score\footnote{We define our Interest Score as being an approximation of the number of
+upvotes/downvotes, and comments that a query could expect to attain, or another similar measure. We may also include an ideal time of day to post, in addition
+to a ranking on how it compares to all posts on a given subreddit (in the form of an Interest Percentage).} for them. 
 We will then compare our generated interest score to the interest score of those in the sample.
 
 We will make attempts to account for the time decay of upvotes/downvotes and the time of day the post was made. We will
 also make sure to take a wide sample of posts, ranging from the most popular to least popular, to make sure that our system
-is not fitting to a specific subset of posts and manages to accruately (hopefully with a low error) the Interest Score of 
-those sampled posts.
+is not biased to a specific subset of posts and manages to accurately predict an Interest Score which matches the
+measured reality of those posts.
 
 
 \section{Implementation}
@@ -199,7 +201,7 @@ data processing.  This will give us more time to spend analyzing and retrieving 
 from the databases we build.
 
 Furthermore, Reddit's underlying server-side source code is also written
-in Python and is available on Github\footnote{\texttt{https://github.com/reddit/reddit}}.  Analysis of this
+in Python and is available on GitHub\footnote{\texttt{https://github.com/reddit/reddit}}.  Analysis of this
 code may be useful for determining the best uses of the statistics provided by Reddit.  For instance,
 Reddit's own ranking algorithm which determines which posts should appear near the top of a given
 subreddit uses the post's age and upvote/downvote counts in order to determine the post's position,
@@ -216,11 +218,12 @@ posts in the long term, but care must be taken to watch for and account for thes
 our data is correct and accurate.
 
 As ``community interest'' is a relatively vague and subjective term, it is difficult to define a strong
-baseline comparison for measuring the accuracy of our algorithm.
-However, being able to accurately predict, based on text alone, whether a new post will reach the front
+baseline comparison for measuring the accuracy of our algorithm.  However, we can use a number of techniques
+to gauge relative accuracy.  For instance, being able to accurately predict, based on text alone, whether a new post will reach the front
 page of a subreddit (top 25 of recent posts, according to Reddit's ranking algorithm) should be a good
 start.  Similarly, the algorithm should assign high interest ratings to all posts which appear on
-the front page, when supplied only with the text of the post.  Therefore, we could create snapshots
+the front page, when supplied only with the text of the post, indicating agreement with the users of
+Reddit and with Reddit's own algorithms.  Therefore, we could create snapshots
 of the front page and of recently submitted posts at regular intervals, and use these to measure
 the effectiveness of our algorithms by routinely calculating interest for all posts on the front page
 and for all recently submitted posts.  We expect the posts on the front page to have a higher interest
@@ -242,8 +245,8 @@ loops to do this from Python.  On the other hand, a database storage engine adds
 be more difficult to manage.  An alternative would be to use Python's \texttt{pickle} library, which
 stores native Python data structures (lists, tuples, and dictionaries) directly in byte-form into a file,
 allowing them to be saved and loaded at any time.  However, depending on the amount of data collected,
-it may be unreasonable to store all of the data in memory and it may be necessary to use additional file
-storage as well.
+it may be unreasonable to store all of the data in memory, or even in one file, and it may be necessary
+to use additional file storage as well.
 
 % go to next column so it looks pretty and stuffs.
 \balancecolumns
@@ -252,7 +255,9 @@ Some additional work will have to be done to create an interface for querying th
 interface could be implemented in a terminal-based system for basic querying, or in a
 browser-based setting (for example through Python's \texttt{SimpleHTTPServer} modules) to allow
 for better data visualization of the results.  The relevant information to be displayed has not
-yet been determined, so the implementation details of the user interface will be determined later.
+yet been determined, so the implementation details of the user interface will be determined later,
+but will likely include both the ability to estimate score of new posts and also to view scores
+and other information about posts that have been indexed previously.
 
 
 \section{Group Tasks and \\Responsibilities}
