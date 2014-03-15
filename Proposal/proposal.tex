@@ -117,7 +117,35 @@ In addition, the uniqness of the post will also contribute to determing how popu
 
 Write about this article here \cite{liu:interest}
 
-\vspace{10 mm}
+Some work has also been done by researchers to determine characteristics of articles that
+have been ranked by crowdsourced feedback from users.\cite{askalidis:crowdsourced}
+The results of this study point out that while crowdsourced feedback mechanisms ``can be
+relatively effective for \ldots promoting content of high quality, they do not perform well
+for ordinal objectives such as finding the best articles.''  In other words, while interesting
+topics and general themes are often highlighted as outstanding by user feedback, the best
+specific articles are not always at the very top of the list.  Rankings which are based on
+user feedback will likely tend to positively identify good
+topics, but perhaps not the absolute best topics.  This means that we should not use a post's
+score as an absolute ranking; that is, we should not conclude that one post is definitively better
+than another simply because it has a higher score.  For our purposes, this means that
+all posts with a reasonably high score could be determined to be interesting to the
+community, but that comparing levels of interest (or ranking the level of interest)
+between two interesting topics will likely be very difficult.
+
+The article also has some
+interesting discussion about crowdsourced scores over time, indicating that posts tend
+to take a while to gain momentum, but then explode rapidly if they are determined to
+be interesting.  This means that some posts which are not ``discovered'' by users (they
+may be posted at the wrong time of day or when few users are online, so they are not
+identified by interested users) may fail to gain traction and perform as they should.
+This may mean that the same post, created at different times, may be extremely popular
+one time and not at all another time.  In fact, the post may go unnoticed several times
+and only be discovered once.  Our scoring algorithms will have to take this
+into account, likely by giving the positive feedback of posts which are determined to
+be interesting much more weight than the negative feedback of posts which are determined
+to be uninteresting (because a post that scores highly is almost certainly
+an indicator of community interest, while a post that scores poorly may have many
+different reasons for receiving that score).
 
 \section{Approach}
 Our approach for this project involves three major areas: data collection, processing, and retrieval.
