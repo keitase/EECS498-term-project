@@ -157,6 +157,34 @@ to be uninteresting (because a post that scores highly is almost certainly
 an indicator of community interest, while a post that scores poorly may have many
 different reasons for receiving that score).
 
+Work has been done in this area before by another Michigan student, targeting
+Digg instead of Reddit. His
+website\footnote{http://gigaom.com/2010/08/24/hey-digg-this-17-year-old-knows-what-you-are-thinking/}
+analyzed all of the most recently-posted links on Digg, and used various
+heuristics to predict which articles would make it to the front page. Various
+differences between the algorithms used by the two sites make it impossible to
+use the exact same approach here--the code relied on being able to see which
+users voted on which articles, while on Reddit this information is made private
+by default. In addition, Digg weighted the votes of some users above others
+instead of treating everyone equally. The fundamental concept of extrapolating
+early votes to predict eventual popularity will still be an important concept
+for us to investigate.
+
+In addition to using upvotes and downvotes to rank content, reddit keeps track
+of the total score of all of a user's comments. Power users of reddit have a
+strong incentive to identify posts that will eventually reach the front page,
+since commenting early on these threads provides the maximum return of points
+for the time spent. To this end, the subreddit \texttt{/r/risingthreads} tries
+to identify these threads within minutes of when they are posted, but how it
+does this is not known. The submissions to this subreddit are submitted by a
+bot, that presumably flags posts with lots of early upvotes. In the sidebar of
+the subreddit, \texttt{/r/askreddit} is specifically named as a subreddit for
+which the bot's algorithm performs poorly. Our project, by analyzing the text
+content of the post and its comments, may be able to improve upon this
+performance. This subreddit also shows a way to get user feedback on our
+project's effectiveness. If our project works well enough, we could set up our
+own subreddit to share and test its results.
+
 \section{Approach}
 Our approach for this project involves three major areas: data collection, processing, and retrieval.
 
