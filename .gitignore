@@ -4,3 +4,6 @@
 *.bbl
 *.synctex.gz
 *.aux
+venv
+*.swp
+*.swo
