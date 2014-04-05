@@ -101,7 +101,7 @@ def ask_cron():
     mc.set('question_titles', new_titles + old_titles)
     mc.set('question_ids', new_ids.union(old_ids))
 
-    mc.set('question_scores', new_scores + still_scoring)
+    mc.set('question_scores', new_scores + still_scores)
     mc.set('question_scores_done', new_stores + stored)
 
 if __name__ == "__main__":
