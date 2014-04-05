@@ -1,6 +1,7 @@
 import praw
 import bmemcached
 import os
+import datetime as dt
 
 from pprint import pprint as pp
 
@@ -68,17 +69,40 @@ def ask_cron():
     reddit = reddit_login()
     mc = memcached_login()
 
+    unow = dt.datetime.utcnow()
+
     old_titles = mc.get('question_titles') or []
     old_ids = mc.get('question_ids') or set()
 
     ask_reddit = reddit.get_subreddit('askreddit')
     newest = [s for s in ask_reddit.get_new() if s.id not in old_ids]
+    
+    # [{"id": id, "created": created, "scores": [(time, ups, downs)..]}..]
+    new_scores = [{
+        "id": s.id,
+        "created": dt.datetime.utcfromtimestamp(s.created_utc), 
+        "scores": []
+        } for s in newest]
+
+    pending = mc.get('question_scores') or []
+    stored = mc.get('question_scores_done') or []
+
+    still_scores = [s for s in pending if (unow - s["created"]).days < 1]
+    new_stores = [s for s in pending if (unow - s["created"]).days > 0]
+
+    for s in still_scores:
+        s_id = s["id"]
+        current = r.get_submission(submission_id=s_id)
+        s["scores"].append((unow, current.ups, current.downs))
 
     new_titles = [n.title for n in newest]
     new_ids = set([n.id for n in newest])
 
     mc.set('question_titles', new_titles + old_titles)
     mc.set('question_ids', new_ids.union(old_ids))
+
+    mc.set('question_scores', new_scores + still_scoring)
+    mc.set('question_scores_done', new_stores + stored)
 
 if __name__ == "__main__":
     ask_cron()
