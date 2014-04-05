@@ -92,7 +92,7 @@ def ask_cron():
 
     for s in still_scores:
         s_id = s["id"]
-        current = r.get_submission(submission_id=s_id)
+        current = reddit.get_submission(submission_id=s_id)
         s["scores"].append((unow, current.ups, current.downs))
 
     new_titles = [n.title for n in newest]
