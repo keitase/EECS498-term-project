@@ -69,31 +69,49 @@ def ask_cron():
     reddit = reddit_login()
     mc = memcached_login()
 
-    unow = dt.datetime.utcnow()
-
     old_titles = mc.get('question_titles') or []
     old_ids = mc.get('question_ids') or set()
 
+    scores = mc.get('question_scores') or []
+    stale_scores = mc.get('stale_scores') or []
+
+    unow = dt.datetime.utcnow()
     ask_reddit = reddit.get_subreddit('askreddit')
+
     newest = [s for s in ask_reddit.get_new() if s.id not in old_ids]
     
-    # [{"id": id, "created": created, "scores": [(time, ups, downs)..]}..]
     new_scores = [{
         "id": s.id,
         "created": dt.datetime.utcfromtimestamp(s.created_utc), 
-        "scores": []
+        "hour": (),
+        "6 hrs": (),
+        "12 hrs": (),
+        "day": ()
         } for s in newest]
 
-    pending = mc.get('question_scores') or []
-    stored = mc.get('question_scores_done') or []
-
-    still_scores = [s for s in pending if (unow - s["created"]).days < 1]
-    new_stores = [s for s in pending if (unow - s["created"]).days > 0]
-
-    for s in still_scores:
-        s_id = s["id"]
-        current = reddit.get_submission(submission_id=s_id)
-        s["scores"].append((unow, current.ups, current.downs))
+    if len(scores) >= 6:
+        for s in scores[5]:
+            s_id = s["id"]
+            current = reddit.get_submission(submission_id=s_id)
+            s["hour"] = (unow, current.ups, current.downs)
+    if len(scores) >= 36:
+        for s in scores[35]:
+            s_id = s["id"]
+            current = reddit.get_submission(submission_id=s_id)
+            s["6 hrs"] = (unow, current.ups, current.downs)
+    if len(scores) >= 72:
+        for s in scores[71]:
+            s_id = s["id"]
+            current = reddit.get_submission(submission_id=s_id)
+            s["12 hrs"] = (unow, current.ups, current.downs)
+    if len(scores) >= 144:
+        for s in scores[143]:
+            s_id = s["id"]
+            current = reddit.get_submission(submission_id=s_id)
+            s["day"] = (unow, current.ups, current.downs)
+        new_stale_scores = scores[143]
+    else:
+        new_stale_scores = []
 
     new_titles = [n.title for n in newest]
     new_ids = set([n.id for n in newest])
@@ -101,8 +119,8 @@ def ask_cron():
     mc.set('question_titles', new_titles + old_titles)
     mc.set('question_ids', new_ids.union(old_ids))
 
-    mc.set('question_scores', new_scores + still_scores)
-    mc.set('question_scores_done', new_stores + stored)
+    mc.set('question_scores', [new_scores] + scores[:-1])
+    mc.set('stale_scores', stale_scores + [new_stale_scores])
 
 if __name__ == "__main__":
     ask_cron()
