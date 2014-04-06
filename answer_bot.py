@@ -75,6 +75,8 @@ def ask_cron():
     scores = mc.get('question_scores') or []
     stale_scores = mc.get('stale_scores') or []
 
+    print len(scores)
+
     unow = dt.datetime.utcnow()
     ask_reddit = reddit.get_subreddit('askreddit')
 
