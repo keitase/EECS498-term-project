@@ -122,7 +122,7 @@ def ask_cron():
     else:
         still_scoring = scores
         new_stale_scores = []
-    mc.set('question_scores', [new_scores] + scores[:-1])
+    mc.set('question_scores', [new_scores] + still_scoring)
     mc.set('stale_scores', stale_scores + [new_stale_scores])
 
 if __name__ == "__main__":
