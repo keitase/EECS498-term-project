@@ -109,9 +109,6 @@ def ask_cron():
             s_id = s["id"]
             current = reddit.get_submission(submission_id=s_id)
             s["day"] = (unow, current.ups, current.downs)
-        new_stale_scores = scores[143]
-    else:
-        new_stale_scores = []
 
     new_titles = [n.title for n in newest]
     new_ids = set([n.id for n in newest])
@@ -119,6 +116,12 @@ def ask_cron():
     mc.set('question_titles', new_titles + old_titles)
     mc.set('question_ids', new_ids.union(old_ids))
 
+    if (len(scores)) >= 144:
+        still_scoring = scores[:-1]
+        new_stale_scores = scores[143]
+    else:
+        still_scoring = scores
+        new_stale_scores = []
     mc.set('question_scores', [new_scores] + scores[:-1])
     mc.set('stale_scores', stale_scores + [new_stale_scores])
 
