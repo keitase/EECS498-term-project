@@ -1,0 +1,60 @@
+Nathaniel Price
+Uniquename: nrprice
+EECS 498
+
+
+Tokenizer README
+
+To Run
+======
+Requirements:
+cranfieldDocs be in the same directory as token.py
+
+Example:
+$ ls
+token.py
+cranfieldDocs
+$cd cranfieldDocs
+cranfield0001
+cranfield0002
+...
+
+Execution:
+==========
+Command Line Arguments:
+-p or --port: Activates Porter Stemmer
+-s or --stop: Activates Stop Word remover
+-v or --verbose: Indicates when it is parsing a particular document
+-h or --help: Shows all avaliable command line options
+
+This commmand was used for answers in question 4
+$ python token.py -p -s
+
+
+Pre-Processing:
+---------------
+at the start of the application I go through and preprocess the text removing new lines, in addition to the tag removal. I also make everything lowercase as a way to normalize away from capitilization at the beginning of sentences.
+
+Possesive:
+----------
+I dedcided to remove the 's and replace it with an is. This is much simpler to do and it still tries to handle most of the possesive cases
+
+Date:
+-----
+For dates I decided to say if it was a month other than may, to include the next presented token with it. May was not included because may occured enough times out of context to not make it worthwhile to tokenize is nearest neighbor. 
+
+Acryonyms and Phrases:
+----------------------
+Because of the way things are split from the main text, acryonyms and phrases are kept together. I chose not to alter this in any way as they are significant for being considered a token.
+
+Numbers:
+--------
+Also due to the way things are split from the main text, number by themselves are kept together. Numbers within phrases or within acronyms, or not seperated by a space from another piece of text are kept together. Part of the reason for doing this is that there are toknes within the cranfield documents that reference page numbers or section numbers, which makes the numbers highly significant to that token. Splitting them from their parent token would not help shed any more light on this matter, and would just increase the appearance of that number of the corpous.
+
+
+Output:
+-------
+Outputs total list of tokens in order of number of occurances. It will also print out the total number of unique terms and the total number of words at the end of the output.
+
+
+
