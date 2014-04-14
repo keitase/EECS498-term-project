@@ -28,12 +28,12 @@ tokenregexpattern = r"(([A-Za-z\-]+((\.[A-Za-z])+\.)?)|([0-9]+([,./-]?[0-9]+)+)|
 tokenregex = re.compile(tokenregexpattern)
 
 def isStopToken(token):
-    return (token in ('a', 'all', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'been', 'but', 'by', 'few', 'for', 'from', 'has', 'have', 'he', 'her', 'here', 'him', 'his', 'how', 'i', 'in', 'is', 'it', 'its', 'many', 'me', 'my', 'none', 'of', 'on', 'or', 'our', 'she', 'that', 'the', 'their', 'them', 'there', 'they', 'that', 'this', 'to', 'was', 'were', 'what', 'when', 'where', 'which', 'who', 'why', 'will', 'with', 'you', 'your'))
+    return (token in ('a', 'all', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'been', 'but', 'by', 'few', 'for', 'from', 'has', 'have', 'he', 'her', 'here', 'him', 'his', 'how', 'i', 'in', 'is', 'it', 'its', 'many', 'me', 'my', 'none', 'of', 'on', 'or', 'our', 'she', 'that', 'the', 'their', 'them', 'there', 'they', 'that', 'this', 'to', 'was', 'were', 'what', 'when', 'where', 'which', 'who', 'why', 'will', 'with', 'you', 'your', 'someone', 'something', 'should', 'what\'s', 'reddit', 'redditors'))
 
 def get_stem(word):
     return stemmer.stem(word, 0, len(word)-1)
 
-def tokenize(instr, eliminateStopwords = True, usePorter = True):
+def tokenize(instr, eliminateStopwords = True, usePorter = False):
     if usePorter:
         stemmedwords = [get_stem(x[0]) for x in tokenregex.findall(instr.lower()) if ((not eliminateStopwords) or (not isStopToken(x[0])))]
         return stemmedwords
