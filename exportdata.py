@@ -6,6 +6,7 @@ if __name__ == "__main__":
     data = mc.get("stale_scores")
     f = open("data.py", "w")
     f.write("import datetime\n")
+    f.write("stale = ")
     f.write(repr(data))
     f.write("\n")
     f.close()
