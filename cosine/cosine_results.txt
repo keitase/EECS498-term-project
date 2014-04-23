@@ -1,0 +1,41 @@
+
+Results compiled from data downloaded 4/22.
+
+The titles from groups of posts (a random sample, and the posts from "top" on AskReddit)
+were passed through the query algorithm.  The scores were collected, averaged,
+and compared.
+
+(query_post.py was used.  This script takes one argument which is a file that
+contains a post title on each line.  It queries the cosine similarity index
+and outputs a score for each line of the file.)
+
+
+
+Using non-time-weighted data:
+Average score for random posts:  114.437649 (stdev 33.2896982)
+Average score for    top posts:  156.400293 (stdev 103.479906)
+Calculated Z-score:  1.260529417
+This corresponds roughly to 89.626% confidence (see below)
+
+
+Using time-weighted data:
+Average score for random posts:  110.818317 (stdev 31.6467757)
+Average score for    top posts:  149.363855 (stdev 95.5611283)
+Calculated Z-score:  1.2179926
+This corresponds roughly to 88.839% confidence (see below)
+
+
+
+
+The confidence score can be interpreted thusly:
+The probability that the algorithm works (correctly predicts higher scores for top
+posts ON AVERAGE) is {xx}%.
+
+Note that this is still NOT SIGNIFICANT at a 99%, 95%, OR 90% confidence
+level, so we cannot conclude that the algorithm works.  However, it is close
+enough to those confidence levels that a larger sample size might be able to
+reach 90/95% confidence.  Also, slight modifications and improvements to the
+algorithm would likely be able to make the difference significant.
+
+
+

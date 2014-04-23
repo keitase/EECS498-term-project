@@ -1,11 +1,14 @@
 import indexer
 import tokenizer
 
+#import timeweighted_postdata as postdata
 import postdata
 
 # Can use by importing this file and using query.getScore("Some title of a post")
 
 idx = indexer.indexer()
+
+ct = 0
 
 for i,p in postdata.posts.items():
     if "title" in p: # some posts don't have titles (means they were deleted/some other error happened to them)
@@ -13,6 +16,8 @@ for i,p in postdata.posts.items():
         selftext = p["selftext"].encode('ascii','ignore')
         tokens = tokenizer.tokenize(title)
         idx.addDocument(p["id"], tokens)
+        ct += 1
+print("Indexed {0} documents".format(ct))
 
 idx.makeDocumentVectors()
 
