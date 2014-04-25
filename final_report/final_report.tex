@@ -227,9 +227,30 @@ was implemented and these words were added to the filter.  This further reduces 
 occurrence of the third problem: posts which do not match any previously existing posts cannot be scored at all.  This could happen
 because the post contains only unique words (words that do not appear in any other submissions) after stopword removal.
 
-<keyword approach>
+\subsection{Naive Bayes - Bag of Words Classifier}
+The goal of this method was to be able to create something that would categorize a post as being popular or unpopular based on the words and the frequency of those words that appear in unpopular and popular posts. The idea behind this is that would mark something that has been reposted many times as being unpopular and something that is unique would be marked as being popular. 
 
+In order to accomplish this the posts were split into two categories, popular and unpopular. The weights of these categories was determined by how many posts in the data set were marked as popular versus how many posts in the data set were marked as popular. The weights for each specific dataset were determined by the formula:\\ 
+$$\frac{Number\_of\_posts\_that\_fit\_category}{total\_number\_of\_posts}$$\\
+After each categoryies weights were determined, all the posts in the training set were split into two major categories.
+
+A total vocabulary was created out of each of those categories. The vocabulary also contained the number of times that specific word appeared. The vocabulary was build upon the titles of the posts pertaining to that category. The titles went through a standard tokenizer that removed punctation. In addition, a stop word remover to further filter the title data. However, unlike within the cosine method, there were no specific considerations made due to the posts coming from Reddit. The hope was that these words might fit into one category more than another and could further provide useful information on which category a post pertained to. This vocabulary served as a weighting in the classification step.
+
+Weights for the relavency of each word to the category were created by taking the frequency of a specific word and dividing it by the total amount of words in that category. These weights were later used in order the classification step by weighting the scores associated with that word.
+
+A score vocabulary was also created in order to help the classification step. For every word that occured in each category, the words score was added to a seperate score vocabulary. The score vocabulary consisted of the list of unique words in specific category, and the upvotes minus downvotes (the Reddit score) of the post that the word appeared in.\\
+$$\frac{\sum_{posts\_in\_category} upvotes - downvotes}{Frequency\_of\_word}$$\\
+This allowed us to map specific word to their score in order to generate a score of a new post given to the system. While this new score was never revealed from the system, it helped improve the quality of the classification from the system.
+
+The classification step took a new post, which could be unique or from a test set, and classified it into either unpopular or popular. The classification step would take each word that occured in the new topic, multiply the word score by the weight, and multiply the summation of words in that category by the category probability.\\
+$$(category\_probability)\sum_{word\_in\_query}(Weight * Word\_Score)$$\\
+This operation would occur per category. The results would then be compared and the system would return which category is pertained to. In the evaluation step, the resulting category would be compared to the category it is supposed to belong two, and if they matched up then the system would increase the number it got correct. This would end with being able to decide how well it did compared to the baseline of the system.
+
+
+
+\subsection{Machine Learning - Boolean Classifier}
 <machine learning approach>
+
 Next, the popularity or interest of the post will then be measured through various statistics including
 number of comments, number of upvotes/downvotes received (through Reddit's voting system), number
 of distinct users who commented on the post, average length of the comments, average depth of
@@ -303,8 +324,6 @@ In all of the implementations we compared against marking every post as unpopula
 
 \section{Results}
 
-<keyword approach>
-
 \subsection{Cosine similarity-weighted scoring}
 
 Unlike the other two implementations, the cosine similarity-weighted scoring algorithm does not produce a binary
@@ -366,7 +385,10 @@ every post as uninteresting (for which we would expect to see an accuracy of 95\
 Again, this is likely due to the extremely high variance found in the scores returned by the
 algorithm.
 
+\subsection{Naive Bayes - Bag of Words Classifier}
+Th
 
+\subsection{Machine Learning - Boolean Classifier}
 <machine learning approach>
 
 
