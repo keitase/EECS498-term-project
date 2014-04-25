@@ -252,8 +252,8 @@ the post's popularity score (and thus hopefully lead to a more interesting post 
 \section{Evaluation}
 Initially, we experimentally determined what would a good threshold be to determine whether something was popular or not (whether it generated sufficient community interest). To do this, we randomly sampled the data five different times to look for correlations in the posts. We looked at the spread of posts to help figure out what our threshold should be. The graphic below shows this data from a random 240 posts. For the purposes of our evaluation, we determined that a score of 20 or above would be deemed as popular by the community, and anything less than that would be unpopular. \footnote{20 or above represents the top 5\% of Reddit posts}
 
-\includegraphics[width=8cm]{evaluation.jpg}\\
-(random sample of 240 posts. y-axis = score, x-axis is time)
+\includegraphics[width=8cm]{evaluation.pdf}\\
+(random sample of 240 posts)
 
 We initially used a data set cultivated from a week of posts. This data set included 20,000 posts to \texttt{/r/AskReddit} but was later cut down to 17000 posts once all the deleted posts were removed (by the user or by a moderator). This dataset consisted largely of posts that did not make it to the front page and we not seen by users. These post generated little to no community interest. Out of the 17000 posts, about 270 generated community interest. We initially supplied each implementation with this dataset for training and evaluation.
 
