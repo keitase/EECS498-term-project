@@ -1,0 +1,13 @@
+39864 posts total;  1977 posts ( 4.9594%) above threshold of   20 upvotes (37887 posts (95.0406%) below threshold)
+Hour  0- 1:  3762 posts averaging  0.0620 upvotes;   139 posts above threshold which is  0.8433 times the E.V.
+Hour  2- 3:  3796 posts averaging  0.0634 upvotes;   153 posts above threshold which is  0.9282 times the E.V.
+Hour  4- 5:  3544 posts averaging  0.0595 upvotes;   122 posts above threshold which is  0.7401 times the E.V.
+Hour  6- 7:  2526 posts averaging  0.0696 upvotes;    85 posts above threshold which is  0.5157 times the E.V.
+Hour  8- 9:  1927 posts averaging  0.0257 upvotes;   102 posts above threshold which is  0.6188 times the E.V.
+Hour 10-11:  2155 posts averaging  0.0127 upvotes;   181 posts above threshold which is  1.0981 times the E.V.
+Hour 12-13:  3145 posts averaging  0.0180 upvotes;   225 posts above threshold which is  1.3650 times the E.V.
+Hour 14-15:  3880 posts averaging  0.0232 upvotes;   224 posts above threshold which is  1.3589 times the E.V.
+Hour 16-17:  3862 posts averaging  0.0559 upvotes;   200 posts above threshold which is  1.2133 times the E.V.
+Hour 18-19:  3823 posts averaging  0.0332 upvotes;   219 posts above threshold which is  1.3286 times the E.V.
+Hour 20-21:  3804 posts averaging  0.0682 upvotes;   176 posts above threshold which is  1.0677 times the E.V.
+Hour 22-23:  3640 posts averaging  0.0608 upvotes;   151 posts above threshold which is  0.9161 times the E.V.
