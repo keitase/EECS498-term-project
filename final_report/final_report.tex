@@ -182,7 +182,7 @@ in text-only subreddits.  The posts and their comments will be analyzed, looking
 themes, or topics which seem relevant to the post in order to match the post with other submissions
 that have similar topics.
 
-We focused on the ``score'' of a redit post (the number of upvotes minus the number of downvotes). When implementing our various different systems, we focused on the score as our measure of community interest. We thought of using the comments instead of the score, or inconjunction with the score, but we did not experiment and analyze that within our research and implementations.
+We focused on the upvotes of a redit post. When implementing our various different systems, we focused on the score as our measure of community interest. We thought of using the comments instead of the score, or inconjunction with the score, but we did not experiment and analyze that within our research and implementations.
 
 There were three different implementations that we approached: cosine similarity between topics, naive bayseian on the words found within the posts, and a boolean classifier machine learning approach. We believed that each method had benefits and disadvantages and wanted to experiment with the various different methods to see which method, if any, peformed better than the baseline.
 
@@ -211,8 +211,21 @@ the post's popularity score (and thus hopefully lead to a more interesting post 
 \footnote{This is a possible extension of the project and will need to be explored further.}
 
 \section{Evaluation}
+Initially, we experimentally determined what would a good threshold be to determine whether something was popular or not (whether it generated sufficient community interest). To do this, we randomly sampled the data five different times to look for correlations in the posts. We looked at the spread of posts to help figure out what our threshold should be. The graphic below shows this data from a random 240 posts. For the purposes of our evaluation, we determined that a score of 20 or above would be deemed as popular by the community, and anything less than that would be unpopular. \footnote{20 or above represents the top 5\% of Reddit posts}
 
-<Nathan will fill this in>
+\includegraphics[width=8cm]{evaluation.jpg}\\
+(random sample of 240 posts. y-axis = score, x-axis is time)
+
+We initially used a data set cultivated from a week of posts. This data set included 20,000 posts to \texttt{/r/AskReddit} but was later cut down to 17000 posts once all the deleted posts were removed (by the user or by a moderator). This dataset consisted largely of posts that did not make it to the front page and we not seen by users. These post generated little to no community interest. Out of the 17000 posts, about 270 generated community interest. We initially supplied each implementation with this dataset for training and evaluation.
+
+We built an additional, balanced data set as well. This dataset contains an equal amount of popular versus unpopular posts. This dataset was used to make sure that there was no bias in the data that was skewiing our results. This dataset contains 1,977 posts above a 20 upvote threshold and 1,977 below a 20 upvote threshold.
+
+We additionally built a third dataset to that incorporates the balanced dataset with a time weighting. Time of day plays a major factor into whether a post will be successful or not on Reddit. We wanted to utilize a dataset that helps incooperate this time factor into account. 
+<DAVID FILL IN HERE WITH WHAT YOU ACTUALLY DID>
+
+When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts.
+
+In all of the implementations we compared against marking every post as unpopular. Over 95\% of the posts on Reddit are unpopular, so for our systems to be successful we had to achive better than marking everything as unpopular. 
 
 \section{Results}
 
