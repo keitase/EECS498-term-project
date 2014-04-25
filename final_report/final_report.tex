@@ -1,5 +1,7 @@
 \documentclass{acm_proc_article-sp}
 
+\usepackage{graphicx}
+
 \begin{document}
 
 \title{Determining Community Interest in\\Text-Only Posts on Reddit}
@@ -186,7 +188,44 @@ We focused on the upvotes of a redit post. When implementing our various differe
 
 There were three different implementations that we approached: cosine similarity between topics, naive bayseian on the words found within the posts, and a boolean classifier machine learning approach. We believed that each method had benefits and disadvantages and wanted to experiment with the various different methods to see which method, if any, peformed better than the baseline.
 
-<cosine approach>
+\subsection{Cosine similarity-weighted scoring}
+
+The premise of this method is our expectation that the scores of new submissions will correspond approximately
+with the scores of past submissions that are very similar, which we can judge by the similarity of their titles.
+All of the indexed submissions are therefore tokenized with a regular-expression based tokenizer that
+separates words, and then passed through a standard Porter stemmer\footnote{http://tartarus.org/~martin/PorterStemmer/}.
+Once tokenized and stemmed, the tokens are placed into an index using the tfc-nfx\cite{salton} algorithm.
+
+To determine the expected score of a submission, the index is then queried using the tokens from the new submission's
+title, matching by cosine-similarity.  For this method, the ``score'' of each similar topic is calculated using the formula
+$upvotes - downvotes + comments*2.5$, where $comments$ represents the number of comments that the post received.  The values
+used were all takes after the post had existed for one full day.
+
+Other methods of scoring were also tested, including only using upvotes, or only number of comments.  The stated method of
+scoring appears to work best for this algorithm, although some others produced similar results.  The score returned is not
+intended to correspond with any score available from Reddit or any other source; it is an arbitrary number only comparable to
+other scores returned by the algorithm.
+
+A weighted average was then taken of the scores of each post returned by the index, using the square of the cosine-similarity
+result.  The similarity is squared to minimize the effects of the ``long tail'' of posts that have relatively low similarity, but which
+would otherwise dominate the average because of their large quantity.
+
+By analyzing the posts returned from the index, we can see that this method does fairly accurately recognize similar
+and related questions as we would expect, since it works very much like a search engine looking through old posts.  However, the
+method has a number of downsides that would prevent it from working properly under certain conditions.
+
+First, questions which contain unique words and tokens will match fewer submissions from the index, despite the fact that they are probably more
+interesting than the average question because of their uniqueness.  This will result in a lower score being predicted for those
+posts, which will lead to lower accuracy for these types of posts.
+
+Second, questions which contain many common words will likely match other submissions with very common words, and therefore their
+scores will be lowered.  The use of the tfc-nfx algorithm reduces the effect of this by decreasing the weight of the common words, but
+for a question whose title consists \emph{only} of common words, tfc-nfx will not be able to correctly match similar posts.
+
+Because some words appear on AskReddit with fairly high frequency, such as the words ``Reddit'' and ``Redditors'', a stopword eliminator
+was implemented and these words were added to the filter.  This further reduces the impact of this problem, but also leads to an increased
+occurrence of the third problem: posts which do not match any previously existing posts cannot be scored at all.  This could happen
+because the post contains only unique words (words that do not appear in any other submissions) after stopword removal.
 
 <keyword approach>
 
@@ -221,7 +260,42 @@ We initially used a data set cultivated from a week of posts. This data set incl
 We built an additional, balanced data set as well. This dataset contains an equal amount of popular versus unpopular posts. This dataset was used to make sure that there was no bias in the data that was skewiing our results. This dataset contains 1,977 posts above a 20 upvote threshold and 1,977 below a 20 upvote threshold.
 
 We additionally built a third dataset to that incorporates the balanced dataset with a time weighting. Time of day plays a major factor into whether a post will be successful or not on Reddit. We wanted to utilize a dataset that helps incooperate this time factor into account. 
-<DAVID FILL IN HERE WITH WHAT YOU ACTUALLY DID>
+
+To generate this dataset, we counted the number of submissions that scored above the threshold of 20 upvotes in each two-hour period
+(based on the submission's creation time).  The average number of submissions above the thershold in each two-hour period was 164.75.
+For each of the two-hour periods, the actual number of threshold-reaching submissions in that period was divided by the average to
+determine a ratio, which roughly corresponds to how well submissions in that two-hour period are expected to perform.  The results
+of this process can be seen in the table below.
+
+\begin{table}[h!]
+    \begin{tabular}{l|llll}
+    Time  &             & Above   &      &       \\
+    (UTC) & Submissions & Thresh. & \%   & Mult. \\ \hline
+    0:00-2:00        & 3762        & 139             & 3.69 & 1.19       \\
+    2:00-4:00        & 3796        & 153             & 4.03 & 1.08       \\
+    4:00-6:00        & 3544        & 122             & 3.44 & 1.35       \\
+    6:00-8:00        & 2526        & 85              & 3.37 & 1.94       \\
+    8:00-10:00       & 1927        & 102             & 5.29 & 1.62       \\
+    10:00-12:00      & 2155        & 181             & 8.40 & 0.91       \\
+    12:00-14:00      & 3145        & 225             & 7.15 & 0.73       \\
+    14:00-16:00      & 3880        & 224             & 5.77 & 0.74       \\
+    16:00-18:00      & 3862        & 200             & 5.18 & 0.82       \\
+    18:00-20:00      & 3823        & 219             & 5.73 & 0.75       \\
+    20:00-22:00      & 3804        & 176             & 4.63 & 0.94       \\
+    22:00-0:00       & 3640        & 151             & 4.15 & 1.09       \\
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+\includegraphics[width=8cm]{timeweightinggraph.pdf}
+\end{figure}
+
+Once the ratios were determined, each submission's scores were divided by the ratio (multiplied by the reciprocal, which is shown in the
+table) for their creation time period.  That is, posts between midnight and 2:00 AM UTC had their scores multiplied by 1.19, because they
+tended to perform slightly worse than average.
+
+This has the result of scaling up the scores of posts made during off-peak hours, and scaling down the scores of posts made during peak
+hours, so that by using the scaled scores, posts have a more-or-less even score distribution throughout the day.
 
 When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts.
 
@@ -231,7 +305,67 @@ In all of the implementations we compared against marking every post as unpopula
 
 <keyword approach>
 
-<cosine approach>
+\subsection{Cosine similarity-weighted scoring}
+
+Unlike the other two implementations, the cosine similarity-weighted scoring algorithm does not produce a binary
+response as to whether the post will be interesting or not.  It instead produces a continuous score from zero
+to (potentially) infinity.  This leads to a slightly more complicated problem of evaluating this system.
+
+Two methods of interpreting the results are used here.  The first attempts to determine whether the cosine-similarity method
+is statistically recognizing ``interesting'' posts and scoring them above the average posts.  The second attempts to define
+a threshold score returned by the algorithm that can be used to convert the resulting scores into a binary response for
+comparison with the other implementations and with marking every post as unpopular.
+
+For the first scoring method, a sample of posts taken from AskReddit's ``top posts'' and front page were scored using the
+cosine-similarity scoring algorithm.  Then, a random sample of other posts was taken.  None of the posts used for this
+analysis were available in the query system's index.
+
+The scores of the posts from each category were averaged and compared using a standard statistical Z-test.  Using the
+original data set (non-time-weighted) the average score for random posts was 114.44 with a standard deviation of 33.29.
+The average score for the top posts was 156.40 with a standard deviation of 103.48.  This leads to a Z-score of
+1.2605, corresponding to a confidence level of roughly 89.626\%.
+
+Using the time-weighted data, the algorithm actually performed very slightly worse.  The average score for randomly
+selected posts was 110.82 with a standard deviation of 31.65, while the average score for top posts was 149.36 with
+a standard deviation of 95.56.  This gives a Z-score of 1.2180, which corresponds to 88.839\% confidence level.
+
+Unfortunately, both of these tests fail to reach a significance level of 90\%, because of the wide range (high standard
+deviation) of the returned scores.  We cannot, therefore, conclude that this algorithm effectively predicts higher scores
+for top posts than for random posts (on average).
+
+However, our confidence levels are fairly close to a 90\%, indicating that it may be possible to improve upon the
+scoring algorithm or increase the size of the index in order to reduce the deviations in the results and gain a
+statistically significant result.  Furthermore, the returned scores are fairly normally distributed, but are skewed
+somewhat left toward lower scores, so the Z-test (which relies on a normally distributed data set) will not produce
+a completely accurate result for determining whether this algorithm is reliable.  (It is used here because the data
+is close enough to normal that even with a more sophisticated and specific statistical test, we would still not reach
+significance).
+
+For the second scoring method, a cutoff must be found to determine which posts are ``interesting'' which we define by
+being in the top 5\% of posts.  To find this cutoff, all of the posts currently in the index were scored using the
+same scoring formula as is used in the cosine similarity scoring algorithm (described above).  Then, a value for
+the cutoff score was chosen such that 95\% of posts fall below the cutoff score, and only 5\% of posts exceed the
+cutoff score.
+
+The value we found was 135.5 for the original (non-time-weighted) data set and 149.320 for the time-weighted data set.
+However, this does not account for the squaring of the similarity score which is used for weighting the results.  To
+take this into account, the average scores of returned posts using squaring of the similarity score was divided by the average
+scores of the returned posts without squaring, in order to find a score multiplier that corresponds to the 
+expected artificial increase in score because of the squaring.  The multiplier that was applied to the cutoffs
+was 0.870058, giving the new cutoffs 117.893 and 129.917 for non-weighted and time-weighted data sets respectively.
+
+To find the accuracy of the algorithm, the number of actually-interesting posts (above 20 upvotes) that reached
+the cutoff score was divided by the number of posts classified, using posts that were not indexed by the
+similarity-scoring method.  This yielded an accuracy of 78\% for the non-time-weighted data set but only 44\% for
+the time-weighted data set.  This may indicate that the success of a post does not depend as much on its creation
+time as on other factors, but it is unclear.
+
+The accuracy for non-time-weighted data is fairly reasonable, indicating that (as above) the algorithm is incapable
+of clearly distinguishing interesting posts from uninteresting posts more often than an algorithm which marks
+every post as uninteresting (for which we would expect to see an accuracy of 95\%).
+Again, this is likely due to the extremely high variance found in the scores returned by the
+algorithm.
+
 
 <machine learning approach>
 
@@ -248,7 +382,7 @@ In all of the implementations we compared against marking every post as unpopula
 % initial runs of your .tex file to
 % produce the bibliography for the citations in your paper.
 \bibliographystyle{abbrv}
-\bibliography{proposal}  % proposal.bib is the name of the Bibliography in this case
+\bibliography{final_report}  % proposal.bib is the name of the Bibliography in this case
 % You must have a proper ".bib" file
 %  and remember to run:
 % latex bibtex latex latex
