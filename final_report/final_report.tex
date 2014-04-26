@@ -77,7 +77,7 @@ new post and whether a new post is very similar to previous posts.
 \keywords{Data analysis, Reddit, community interest} % NOT required for Proceedings
 
 \section{Problem}
-We sought to explore whether it was possible to predict whether a post would be popular (community interest) or not on \texttt{www.reddit.com}, specifically text-only posts on subreddits sucht as \texttt{/r/AskReddit} or \texttt{/r/ELI5}. \texttt{Reddit} is a platform where users upvote and downvote posts based on various criteria. The users also have the option of posting a comment on a particular post. The overall motivation was to research different machine learning and information retrieval process in order to figure out which would prove to be helpful in determining community interest on \texttt{Reddit}.
+We sought to explore whether it was possible to predict whether a post would be popular (community interest) or not on \texttt{www.reddit.com}, specifically text-only posts on subreddits such as \texttt{/r/AskReddit} or \texttt{/r/ELI5}. \texttt{Reddit} is a platform where users upvote and downvote posts based on various criteria. The users also have the option of posting a comment on a particular post. The overall motivation was to research different machine learning and information retrieval process in order to figure out which would prove to be helpful in determining community interest on \texttt{Reddit}.
 
 There are various applicaitons in which this work would benefit. This could help indicate when it might be a useful time to repost something. The community of Reddit has a strong aversion to things that are posted often. These are often refered to ``reposts''. However, there is some benefit to reposts. Users that are recently new will find the content new and relevant to them. In addition, there is benefits to bringing up a topic again as it will generate close to the same community interest as it did when it was initially posted. Our work could provide a way of detecting when might be the best possible time to repost something for it to be meaningful and relevant to the community.
 
@@ -248,9 +248,18 @@ This operation would occur per category. The results would then be compared and 
 
 
 
-\subsection{Machine Learning - Boolean Classifier}
-<machine learning approach>
+\subsection{Scikit-Learn - Stochastic Gradient Descent}
+The goal of this method was to combine composable open-source machine learning components into something that produces useful results. The Scikit-Learn Python library was used to accomplish this goal. By reducing the problem to binary classification, the library's vectorization, stochastic gradient descent, and one vs rest components could be used to produce a result.
 
+The transformation into a binary classification problem consisted of applying a simple cutoff to the total score of each post after one day's time. (Only the total score $(upvotes - downvotes)$ is confirmed to be accurate by the Reddit administrators, and in this case comments were disregarded.) Scores above this cutoff were labeled as successful, and all others were labelled as unsuccessful. This can easily be extended to any number of categories/cutoffs, using the same library functions, but simple binary classification was what we focused on.
+
+The input to the machine learning model came from the question titles. The titles were first lowercased, split into words, and vectorized. Options exist to strip words that with too high or too low of a frequency, but this was unnecessary, given the small size of the dataset. Standard tf-idf was then applied to the vectorized forms of the question titles.
+
+The correlation between these vectorized titles and the binary labels was then modelled with a linear support vector machine. This model was trained against a subset of the data using stochastic gradient descent. This approach initially seemed unsuitable for our purposes. The defaults for scikit-learn's library functions are normally sensible and can be left alone. For example, whether or not to lowercase the documents before tokenizing, what loss function to use when training, and what to do with accented characters are all decisions made correctly by those defaults. One default parameter, though, assumed that the universe of documents would be evenly split among the $k$ classes (in this case, 2). This can give results with a carefully-picked cutoff point, but most interesting cutoff points have nowhere near this ratio. Overriding the class\_weight parameter to infer the true proportions from the training data allowed the system to give meaningful results for any cutoff point.
+
+Combining the library functions from scikit-learn in this way allowed us to construct a useful system in only a few lines of code. Disregarding the code needed to transform the raw data into the appropriate forms, the actual training and prediction together take less than 10 lines of code.
+
+\subsection{Data Management}
 Next, the popularity or interest of the post will then be measured through various statistics including
 number of comments, number of upvotes/downvotes received (through Reddit's voting system), number
 of distinct users who commented on the post, average length of the comments, average depth of
