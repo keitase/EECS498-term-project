@@ -7,6 +7,7 @@ EECS 498
 import re
 import operator
 import os
+import string
 #import cProfile
 from optparse import OptionParser
 from stemming.porter2 import stem
@@ -102,6 +103,7 @@ def pre_process_text(text):
 	return text
 
 def get_tokens(text, tokens, port, stop):
+	text = clean_string(text)
 	#first just simply get all tokens as everything that is split appart
 	list_of_tokens = text.split(' ')
 
@@ -213,6 +215,12 @@ def stop_words(string):
 		return True
 
 	return False
+
+#Removes punctuation and makes it lower case.
+def clean_string(text):
+  regex = re.compile('[%s]' % re.escape(string.punctuation))
+
+  return regex.sub(' ', text)
 
 if __name__ == "__main__":
     #cProfile.run('main()')
