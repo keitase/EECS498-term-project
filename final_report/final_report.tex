@@ -386,11 +386,75 @@ Again, this is likely due to the extremely high variance found in the scores ret
 algorithm.
 
 \subsection{Naive Bayes - Bag of Words Classifier}
-Th
+The evaluation of the classifier measured the number of correct classifications that the system got divided by the number of total test posts.\\
+$$\frac{correct\_classifications}{total\_test\_posts}$$\\
+This measurment was compared to a baseline of marking everything as in the unpopular category.
+
+First the system ran with a strict baseline of marking everything as unpopular. This resulted in a baseline of 98.6\% accuracy. Thus, the further evaluations would have to perform better than this baseline in order for the results to be relevant.
+
+The subsequent test were conducted on the first dataset. In these tests the post score threshold was manipulated. The post scores that were tested were 20, 40, 100, and 200. A post must have equal to or over the score in order to be considered as popular. 
+
+The results are shown in the table below:\\
+\begin{tabular}{l|l}
+Method & Precision\\
+\hline
+Baseline & 0.986\\
+20 & 0.976\\
+40 & 0.98\\
+100 & 0.988\\
+200 & 0.99\\
+\end{tabular}
+
+\begin{figure}[h!]
+\includegraphics[width=8cm]{dataset-keyword.png}
+(left to right: Baseline, 20, 40, 100, 200)
+\end{figure}
+
+As is shown by the precision raitings, the higher the score threshold, the higher the precision. The reason, we believe, why the 20 and 40 score thresholds are below the baseline is due to the fact that those thresholds, while they may mark things as being popular, acutally incorrectly mark unpopular posts. The higher thresholds do better than baseline due to the fact that they are being more strict on what the threshold should be, and mark only the most popular posts as being popular. Thus, it benefits from the nature of the dataset that most things are considered unpopular, and that only a few posts within the dataset are actually popular.
+
+The system was also later tested on the balanced dataset and the timeweighted balanced dataset. The same tests were performed on each of these datasets. However, the altering of the threshold also affects the balanced nature of the dataset. The thresholds alter what category each post will fall into. For example, if the balanced\_postdata dataset was used with a threshold of 40, then now there would be more unpopular vs popular posts when the system goes to split the posts into the categories for the bag of words operations on the posts. 
+
+The following is the results for each other dataset:\\
+Balanced Dataset\\
+\begin{tabular}{l|l}
+Method & Precision\\
+\hline
+Baseline & 0.551\\
+20 & 0.546\\
+40 & 0.736\\
+100 & 0.832\\
+200 & 0.889\\
+\end{tabular}
+
+\begin{figure}[h!]
+\includegraphics[width=8cm]{balanced-dataset-keyword.png}
+(left to right: Baseline, 20, 40, 100, 200)
+\end{figure}
+
+Time-Balanced Dataset\\
+\begin{tabular}{l|l}
+Method & Precision\\
+\hline
+Baseline & 0.562\\
+20 & 0.54\\
+40 & 0.734\\
+100 & 0.836\\
+200 & 0.896\\
+\end{tabular}
+
+\begin{figure}[h!]
+\includegraphics[width=8cm]{time-balanced-dataset-keyword.png}
+(left to right: Baseline, 20, 40, 100, 200)
+\end{figure}
+
+What was surprising about these results is that even baseline did better than 50\% even though the dataset was completely split in half. The reasoning for this, we believe, is due to the weightings that the words are given and the scores that they recieved. 
+
+The balanced dataset actually inhibits the results of the naive bayes classifier because it relies upon the category weighting. With the category weighting set at 50\% (for Baseline and 20 thresholds), the system struggled to correctly classify the documents. This is why as the threshold gets higher and higer for the balanced datasets, and as the balanced datasets become more unbalanced, the systems performance increases.
 
 \subsection{Machine Learning - Boolean Classifier}
 <machine learning approach>
 
+\subsection{Discussion}
 
 % go to next column so it looks pretty and stuffs.
 %\balancecolumns
