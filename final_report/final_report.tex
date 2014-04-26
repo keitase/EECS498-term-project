@@ -318,7 +318,9 @@ tended to perform slightly worse than average.
 This has the result of scaling up the scores of posts made during off-peak hours, and scaling down the scores of posts made during peak
 hours, so that by using the scaled scores, posts have a more-or-less even score distribution throughout the day.
 
-When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts.
+When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts. 
+
+We figured that this way of managing the time data would be most consistent with our current handling of data, and would still provide useful results. There are other considerations we could have used when looking at time information, and these could have provided better results. Other considerations include having the timing functionality seperate from the rest of the data (post processing the time information). An additional method would be to take into account how quickly a post takes off, and the overall community activity at a given time period. However, we did not examine this information in our research, but it is something that could be examined in future work.
 
 In all of the implementations we compared against marking every post as unpopular. Over 95\% of the posts on Reddit are unpopular, so for our systems to be successful we had to achive better than marking everything as unpopular. 
 
@@ -454,7 +456,6 @@ The balanced dataset actually inhibits the results of the naive bayes classifier
 \subsection{Machine Learning - Boolean Classifier}
 <machine learning approach>
 
-\subsection{Discussion}
 
 % go to next column so it looks pretty and stuffs.
 %\balancecolumns
