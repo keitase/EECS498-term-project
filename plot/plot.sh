@@ -12,7 +12,7 @@ source ../venv/bin/activate
 for cutoff in {1,2,3,50,100}
 do
     echo $cutoff
-    ../venv/bin/python ../classify.py --posts t --cutoff $cutoff --dat >> tosplit.dat
+    ../venv/bin/python ../classify.py --cutoff $cutoff --dat >> tosplit.dat
 done
 
 ./split_dat.sh

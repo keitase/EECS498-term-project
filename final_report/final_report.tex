@@ -462,9 +462,58 @@ What was surprising about these results is that even baseline did better than 50
 
 The balanced dataset actually inhibits the results of the naive bayes classifier because it relies upon the category weighting. With the category weighting set at 50\% (for Baseline and 20 thresholds), the system struggled to correctly classify the documents. This is why as the threshold gets higher and higer for the balanced datasets, and as the balanced datasets become more unbalanced, the systems performance increases.
 
-\subsection{Machine Learning - Boolean Classifier}
-<machine learning approach>
+\subsection{Scikit-Learn - Stochastic Gradient Descent}
+As discussed in previous sections, evaluating the performance of this method is made difficult by the skewed nature of the data. Use of the raw percentage of correctly classified questions is easily gamed by predicting no successes for most cutoffs. The training algorithm used in this approach initially suffered this problem itself, as discussed above.
 
+To overcome this problem, this method was evaluated in a way that treats false positives differently than false negatives. Splitting the data up in this way allows us to calculate the recall and precision of the model in. In this evaluation, those documents that score above the cutoff are treated as the relevant documents. In all of the following, $recall = numTruePos / (numTruePos + numFalseNeg)$, and $precision = numTruePos / (numTruePos + numFalsePos)$.
+
+All evaluation was done using simple 20 percent hold-out validation. The model was trained on the first 80 percent of the collected questions, and evaluated on the last 20 percent. This introduces an avoidable bias of the model towards older questions, using the most recent data only for testing, but we feel that this accurately reflects the use-case of the prediction function.
+
+The following chart shows the performance of this method at various cutoff scores. The group on the left shows the true proportions of the test data, at the given cutoff values. The group on the right shows true positives, false positives, false negatives, and true negatives at the same cutoff values.
+
+\includegraphics[width=8cm]{stacked.png}\\
+
+\begin{tabular}{l|l|l|l|l}
+    Cutoff & True Neg & False Neg & False Pos & True Pos\\
+1 & 1826 & 1579 & 1533 & 3034\\
+2 & 2581 & 1148 & 2197 & 2046\\
+3 & 3512 & 812 & 2412 & 1236\\
+50 & 5574 & 63 & 2288 & 47\\
+100 & 6123 & 50 & 1777 & 22\\
+\hline
+\end{tabular}
+
+The only difference between the above data and the following data is that the latter takes into account the time-weighting adjustment (described earlier in this paper). 
+
+\includegraphics[width=8cm]{time_stacked.png}\\
+
+\begin{tabular}{l|l|l|l|l}
+    Cutoff & True Neg & False Neg & False Pos & True Pos\\
+\hline
+1	& 1410	& 1640	& 1257	& 3665\\
+2	& 2135	& 1247	& 1993	& 2597\\
+3	& 2848	& 885	& 2549	& 1690\\
+50	& 5748	& 67	& 2116	& 41\\
+100	& 6054	& 47	& 1847	& 24\\
+\end{tabular}
+
+The data shows that any effect had by the time-weighting procedure is lost in the overall change altering the score in this way makes to the dataset. Because the time-weighting procedure only boosts scores, and does not lower others to compensate, it has the effect of increasing the number of true positives. This makes any effect it has on the algorithm's success in identifying these positives too small to identify.
+
+Training on the balanced dataset has even larger side-effects. Since the results are balanced at a cutoff of 20, only that cutoff can be evaluated. The model already takes into account the proportions of its input classes, so evaluating the balanced dataset is unnecessary.
+
+Something that does have an effect on the performance of this model is the raw amount of data availible to train on. Three snapshots of the ongoing data collection were taken over the course of this project. The final model was retroactively applied to these three snapshots, at a cutoff of 20. Its performance, in terms of recall and precision, is graphed here as a function of the size of the total dataset:
+
+\includegraphics[width=8cm]{rps.png}\\
+
+\begin{tabular}{l|l|l}
+    Num Questions & Recall & Precision\\
+\hline
+16837 & 0.376623376623 & 0.0338389731622\\
+28118 & 0.462025316456 & 0.0403092214246\\
+39864 & 0.459227467811 & 0.0411538461538\\
+\end{tabular}
+
+Precision increases monotonically, but slowly. Recall shoots up between the first and second snapshots, but slightly decreases between the second and the third. Further data collection and research is required to understand the causes of these trends. Has recall already peaked, or is its dip just a chance event? Will precision increase at the same rate with more data, or will it level off near its current low level? These are interesting questions for further study, but cannot be answered now.
 
 % go to next column so it looks pretty and stuffs.
 %\balancecolumns
