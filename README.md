@@ -12,3 +12,12 @@ To run: python evaluate.py
 
 To change the threshold: alter threshold varaible at the top of the program
 To change dataset: import different dataset and make sure the dataset is contained in the folder.
+
+Machine Learning Implementation:
+================================
+
+To run: `python classify.py`
+
+    python classify.py --help lists the command line options
+
+The cutoff and dataset can be varied. You can print stuff in a gnuplot-friendly format, too. You can also cheat. Don't do that.
