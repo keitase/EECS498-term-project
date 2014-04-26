@@ -327,7 +327,9 @@ tended to perform slightly worse than average.
 This has the result of scaling up the scores of posts made during off-peak hours, and scaling down the scores of posts made during peak
 hours, so that by using the scaled scores, posts have a more-or-less even score distribution throughout the day.
 
-When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts.
+When evaluating the systems with each dataset, we tested on how well it worked on a subset of that dataset. For example, we might use 80\% of a given dataset as training and the reamining portion of the dataset for testing. We would go through and mark posts as being popular or unpopular based on our threshold. Then, we would use each of our implementations to go through the dataset and classify the posts. We would then compare how the specific implementation did by using the formula $\frac{Number Classified Correctly}{Total Classified}$. This would give us a percentage how well it classified the posts. 
+
+We figured that this way of managing the time data would be most consistent with our current handling of data, and would still provide useful results. There are other considerations we could have used when looking at time information, and these could have provided better results. Other considerations include having the timing functionality seperate from the rest of the data (post processing the time information). An additional method would be to take into account how quickly a post takes off, and the overall community activity at a given time period. However, we did not examine this information in our research, but it is something that could be examined in future work.
 
 In all of the implementations we compared against marking every post as unpopular. Over 95\% of the posts on Reddit are unpopular, so for our systems to be successful we had to achive better than marking everything as unpopular. 
 
@@ -463,14 +465,23 @@ The balanced dataset actually inhibits the results of the naive bayes classifier
 \subsection{Machine Learning - Boolean Classifier}
 <machine learning approach>
 
-\subsection{Discussion}
 
 % go to next column so it looks pretty and stuffs.
 %\balancecolumns
 
 \section{Conclusion}
+During our research we explored three different possible ways of tackling the problem of determining community interest on posts on the subreddit \texttt{/r/AskReddit}. The approaches we took were: Cosine similarity between posts, Naive Bayes - Bag of Words classifier, and a Machine Learning - Boolean Classifier approach. 
 
-<Nathan will fill this in>
+We have explored how different Information Retrieval and Machine Learning methods could be used to tackle this problem. In addition, we looked at how different aspects of time affected the retrieval of our system. We showed some of the benefits and disadvantages of each different method, and how they all had their limitations.
+
+However, our work only focused on simple methods of classification and score estiamtion. There more advanced methods that could be utilized that may improve the quality of classification. In addition, future work might involve finding a way to integrate some or all of our proposed methods. This integration might improve the overall quality of the system.
+
+Another focus of future work could rely upon the social aspect of Reddit. In all of our approaches, we did not focus individual commentors, the number of comments, or the content of the comments. These might prove to be a more useful metric of classifcation, as it did with Digg. The same method of looking at the most popular commentors could be used as a measure for popularity on Reddit as well. This method does have some drawbacks as there are many comment bots that could affect the results of this method, but this method could also prove to be far more useful than our proposed solutions. Nevertheless, future work on this subject would ideally take into account the social aspect of Reddit in some for or another.
+
+\section{Contributions}
+Each implementation was mainly worked upon by a specific group member. Cosine: David, Naive Bayes: Nathan, Machine Learning: Charles. While we helped each other with issues that occured along the way and with thinking of solutions to each approach, each approach was mainly worked upon by the implementation specific individual. 
+
+We all collectively worked on the Proposal, Presentation, and Final Report. All contributions were talked about, edited, and overlooked by all group members.
 
 %
 % The following two commands are all you need in the
