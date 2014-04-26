@@ -54,6 +54,33 @@ ids = posts.keys()
 train_ids = ids[:n_train]
 test_ids = ids[n_train:]
 
+if args.cheat:
+    train_ds = [(posts[i]["day"][1] - posts[i]["day"][2]) for i in train_ids]
+    train_hs = [(posts[i]["hour"][1] - posts[i]["hour"][2]) for i in train_ids]
+
+    cut_hours = [h for h,d in zip(train_hs, train_ds) if d > CUTOFF]
+    cut_hr = sorted(cut_hours)[10]
+
+    test_ds = [(posts[i]["day"][1] - posts[i]["day"][2]) for i in test_ids]
+    test_hs = [(posts[i]["hour"][1] - posts[i]["hour"][2]) for i in test_ids]
+
+    true_pos = len([1 for d,h in zip(test_ds,test_hs) if d > CUTOFF and h >= cut_hr])
+    false_pos = len([1 for d,h in zip(test_ds,test_hs) if d <= CUTOFF and h >= cut_hr])
+    false_neg = len([1 for d,h in zip(test_ds,test_hs) if d > CUTOFF and h < cut_hr])
+    true_neg = len([1 for d,h in zip(test_ds,test_hs) if d <= CUTOFF and h < cut_hr])
+
+    print n_test
+    print true_pos,false_pos,false_neg,true_neg
+    print "Recall: {} -- Precision: {}".format(
+            true_pos / (true_pos + false_neg),
+            true_pos / (true_pos + false_pos))
+    
+    #print min(cut_hours)
+    #print min(hr_scores)
+    #print sum(cut_hours) / len(cut_hours)
+    #print sum(hr_scores) / len(hr_scores)
+    exit(0)
+
 #print train_ids
 
 train_titles = [posts[i]["title"] for i in train_ids]
@@ -68,6 +95,9 @@ test_labels = [(posts[i]["day"][1] - posts[i]["day"][2]) > CUTOFF for i in test_
 #print train_labels[0:5]
 #print test_labels[0:5]
 
+##############################################################################
+# Looking for 10 lines of code?
+
 vect = CountVectorizer()
 tfidf = TfidfTransformer()
 #clf = OneVsRestClassifier(LinearSVC())
@@ -81,6 +111,9 @@ clf.fit(train_docs, train_labels)
 test_docs = vect.transform(test_titles)
 test_docs = tfidf.transform(test_docs)
 predicted = clf.predict(test_docs)
+
+# Close enough?
+##############################################################################
 
 #print list(predicted)
 
